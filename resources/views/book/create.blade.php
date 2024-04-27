@@ -9,6 +9,7 @@
                         <div>
                             <x-forms.label name="co_id" />
                             <select name="co_id" id="owner" class="form-control">
+                                <option selected disabled>Select The Content Owner</option>
                                 @foreach ($owners as $owner)
                                 <option {{$owner->idx == old("co_id") ? "selected" : " "}} value="{{$owner->idx}}">{{$owner->name}}</option>
                                 @endforeach
@@ -18,6 +19,7 @@
                         <div class="mb-4">
                             <x-forms.label name="publisher_id" />
                             <select name="publisher_id" id="publisher" class="form-control">
+                                <option selected disabled>Select The Publisher</option>
                                 @foreach ($publishers as $publisher)
                                 <option {{$publisher->idx == old("publisher_id") ? "selected" : " "}} value="{{$publisher->idx}}">{{$publisher->name}}</option>
                                 @endforeach
@@ -27,27 +29,26 @@
                         <div class="input_field mb-4">
                             <input type="text" class="form-control" name="book_uniq_idx" placeholder="Enter Book ID"
                             value="{{old("book_uniq_idx")}}">
+                            <x-error name="book_uniq_idx" />
                         </div>
                         <div class="input_field mb-4">
                             <input type="text" class="form-control" name="bookname" placeholder="Enter Book Name"
                             value="{{old("bookname")}}">
+                            <x-error name="bookname" />
                         </div>
-                        <div class="input_field mb-4">
+                       <div class="input_field mb-4">
                             <input type="file" class="form-control" name="cover_photo"  value="{{old("cover_photo")}}"
                            >
+                           <x-error name="cover_photo" />
                         </div>
                         <div class="input_field mb-4">
                             <input type="text" class="form-control" name="prize" placeholder="Enter Book Prize"
                             value="{{old("prize")}}">
+                            <x-error name="prize" />
                         </div>
                         <div class="text-center mt-5">
                             <button type="submit" class="btn btn-outline-dark rounded-pill px-5 text-secondary">Submit</button>
                         </div>
-                        <ul class="pt-3">
-                            @foreach ($errors->all() as $error)
-                                <li class="text-danger">{{$error}}</li>
-                            @endforeach
-                        </ul>
                     </form>
                 </div>
             </div>

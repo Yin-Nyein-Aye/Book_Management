@@ -9,10 +9,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('register', [UserController::class, 'create'])->name('register');
-Route::post('register', [UserController::class, 'store']);
-Route::get("login",[AuthController::class,"login"]);
-Route::post('login', [AuthController::class, 'postLogin'])->name('login');
+Route::get('/register', [UserController::class, 'create'])->name('register');
+Route::post('/register', [UserController::class, 'store']);
+Route::get("/login",[AuthController::class,"login"]);
+Route::post('/login', [AuthController::class, 'postLogin'])->name('login');
 Route::post("/logout",[AuthController::class,"logout"]);
 
-Route::resource('/book', BookController::class);
+Route::middleware('user')->group(function() {
+    Route::resource('/book', BookController::class);
+});

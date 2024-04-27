@@ -34,7 +34,8 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      */
 
-    public function store(){
+    public function store()
+    {
         $formData=request()->validate([
             "name" =>["required","max:255","min:3"],
             "email"=>["required",Rule::unique("users","email")],
@@ -43,7 +44,7 @@ class UserController extends Controller
             $user = $this->userInterface->store("User",$formData);
             auth()->login($user);
             return redirect("/")->with("success","Welcome Dear, ".$user->name);
-        }
+    }
 
     /**
      * Display the specified resource.

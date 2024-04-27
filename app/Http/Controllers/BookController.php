@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\BookInterface;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Models\Owner;
 use App\Models\Publisher;
-use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class BookController extends Controller
@@ -22,8 +22,12 @@ class BookController extends Controller
 
     public function index()
     {
+        $book = $this->bookInterface->all();
+        if (request()->expectsJson()) {
+            return BookResource::collection($book);
+        }
         return view("book.show",[
-            "books" => Book::with("owner","publisher")->get()
+            "books" => $book
         ]);
     }
 
@@ -47,15 +51,15 @@ class BookController extends Controller
         $formData =  request()->validate([
             "co_id"=>["required",Rule::exists("content_owner","idx")],
             "publisher_id"=>["required",Rule::exists("publisher","idx")],
-            "book_uniq_idx"=>["required",Rule::unique("tbl_book","book_uniq_idx")],
+            "book_uniq_idx"=>["required","size:6",Rule::unique("tbl_book","book_uniq_idx")],
             "bookname"=>["required"],
             "cover_photo"=>["required"],
             "prize"=>["required","numeric"]
         ]);
-        $path = request()->file("cover_photo")->store("cover_photo");
+        $path = request()->file("cover_photo")->store("public/cover_photo");
         $formData["cover_photo"]=$path;
-        $book = $this->bookInterface->store("Book",$formData);
-         return redirect("/");
+        $this->bookInterface->store("Book",$formData);
+        return redirect(route('book.index'));
     }
 
     /**
@@ -86,14 +90,14 @@ class BookController extends Controller
         $formData =  request()->validate([
             "co_id"=>["required",Rule::exists("content_owner","idx")],
             "publisher_id"=>["required",Rule::exists("publisher","idx")],
-            "book_uniq_idx"=>["required",Rule::unique("tbl_book","book_uniq_idx")],
+            "book_uniq_idx"=>["required","size:6",Rule::unique("tbl_book","book_uniq_idx")->ignore($book->idx,'idx')],
             "bookname"=>["required"],
             "prize"=>["required","numeric"]
         ]);
 
         $formData["cover_photo"]= request()->file('cover_photo') ?
-        request()->file("cover_photo")->store("cover_photo") : $book->cover_photo;
-        $book = $this->bookInterface->update("Book",$formData,$book->idx);
+        request()->file("cover_photo")->store("public/cover_photo") : $book->cover_photo;
+        $this->bookInterface->update("Book",$formData,$book->idx);
         return redirect(route('book.index'));
     }
     /**

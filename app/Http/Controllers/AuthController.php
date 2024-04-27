@@ -7,11 +7,13 @@ use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
-    public function login(){
+    public function login()
+    {
         return view("auth.login");
     }
 
-    public function postLogin(){
+    public function postLogin()
+    {
        $formData= request()->validate([
             "email"=>["required","email","max:255",Rule::exists("users","email")],
             "password"=>["required","min:8","max:255"]
@@ -29,7 +31,8 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(){
+    public function logout()
+    {
         auth()->logout();
         return redirect("/")->with("success","Good Bye");
     }

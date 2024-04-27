@@ -3,16 +3,14 @@
 namespace App\Repositories;
 
 use App\Contracts\BookInterface;
-use App\Contracts\UserInterface;
 use App\Db\Core\Crud;
 use App\Models\Book;
-use App\Models\User;
 
 class BookRepository implements BookInterface
 {
     public function all()
     {
-        return User::paginate(5);
+        return Book::with("owner","publisher")->paginate(10);
     }
 
     public function findByID(string $modelName, int $id)
